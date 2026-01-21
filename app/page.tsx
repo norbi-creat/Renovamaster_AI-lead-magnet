@@ -15,9 +15,9 @@ export default function Page() {
     setTimeout(() => {
       const doc = new jsPDF();
       doc.setFontSize(22);
-      doc.text("KAHELISZTO KFT.", 105, 20, { align: "center" });
+      doc.text("RENOVAMASTER AI", 105, 20, { align: "center" });
       doc.setFontSize(14);
-      doc.text("10 PONTOS FELUJITASI CSEKKLISTA", 105, 35, { align: "center" });
+      doc.text("A Nyugodt Felújítás Kézikönyve", 105, 35, { align: "center" });
       
       const lista = [
         "1. Statikai szakvelemeny", "2. Elektromos halozat", "3. Vizesedes vizsgalat",
