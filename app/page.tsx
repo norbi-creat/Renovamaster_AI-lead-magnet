@@ -9,10 +9,9 @@ export default function LeadMagnetPage() {
 
   // FIX CÉGADATOK A KAPCSOLATFELVÉTELHEZ
   const provider = {
-    name: 'Kaheliszto Építőipari Kft.',
-    phone: '+36 30 123 4567', // Cseréld ki a saját számodra!
-    email: 'info@kaheliszto.hu', // Cseréld ki a saját email címedre!
-    address: '3561 Felsőzsolca, Nagyszilvás u. 26.'
+    name: 'Renovamaster AI',
+    phone: '+36 70 663 76 08', // Cseréld ki a saját számodra!
+    email: 'miski.norbert@gmail.com', // Cseréld ki a saját email címedre!
   };
 
   const generateChecklistPDF = () => {
@@ -28,7 +27,7 @@ export default function LeadMagnetPage() {
     doc.setTextColor(255, 255, 255);
     doc.setFont("times", "bold");
     doc.setFontSize(22);
-    doc.text("KAHELISZTO KFT.", 105, 18, { align: "center" });
+    doc.text("RENOVAMASTER AI", 105, 18, { align: "center" });
     
     doc.setFontSize(14);
     doc.text("LAKÁSFELÚJÍTÁSI CSEKKLISTA", 105, 28, { align: "center" });
@@ -74,9 +73,9 @@ export default function LeadMagnetPage() {
     doc.setFont("times", "normal");
     doc.setFontSize(10);
     doc.text(`Hívj minket bizalommal: ${provider.phone}`, 105, 262, { align: "center" });
-    doc.text(`Email: ${provider.email} | Web: www.kaheliszto.hu`, 105, 268, { align: "center" });
+    doc.text(`Email: ${provider.email});
 
-    doc.save("Kaheliszto_Felujitasi_Csekklista.pdf");
+    doc.save("Renovamaster_AI_Felujitasi_Csekklista.pdf");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -180,4 +179,5 @@ export default function LeadMagnetPage() {
       </div>
     </div>
   );
+
 }
