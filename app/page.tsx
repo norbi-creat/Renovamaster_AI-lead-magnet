@@ -1,108 +1,60 @@
 'use client';
 import React, { useState } from 'react';
+import { Download, CheckCircle } from 'lucide-react';
 import jsPDF from 'jspdf';
 
 export default function Page() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [done, setDone] = useState(false);
 
-  const downloadPDF = () => {
-    const doc = new jsPDF();
-    doc.setFontSize(22);
-    doc.text("KAHELISZTO KFT.", 105, 20, { align: "center" });
-    doc.setFontSize(16);
-    doc.text("FELUJITASI CSEKKLISTA", 105, 35, { align: "center" });
-    
-    doc.setFontSize(12);
-    const pontok = [
-      "1. Statikai szakvelemeny (Fofalak elott)",
-      "2. Elektromos halozat felmerese",
-      "3. Vizesedes vizsgalata",
-      "4. CSOK es tamogatasok ellenorzese",
-      "5. Irasos vallalkozoi szerzodes",
-      "6. Sittszallitas es kontener",
-      "7. Burkolatok rendelési ideje",
-      "8. Szaradasi idok betartasa",
-      "9. Szomszedok tajekoztatasa",
-      "10. 15% tartalekkeret kepzese"
-    ];
-
-    pontok.forEach((pont, i) => {
-      doc.text(pont, 20, 55 + (i * 12));
-    });
-
-    doc.save("Kaheliszto_Csekklista.pdf");
-  };
-
-  const onSubmit = (e: any) => {
+  const handleDownload = (e: any) => {
     e.preventDefault();
     setLoading(true);
+    
     setTimeout(() => {
+      const doc = new jsPDF();
+      doc.setFontSize(22);
+      doc.text("KAHELISZTO KFT.", 105, 20, { align: "center" });
+      doc.setFontSize(14);
+      doc.text("10 PONTOS FELUJITASI CSEKKLISTA", 105, 35, { align: "center" });
+      
+      const lista = [
+        "1. Statikai szakvelemeny", "2. Elektromos halozat", "3. Vizesedes vizsgalat",
+        "4. CSOK szabalyok", "5. Irasos szerzodes", "6. Sittszallitas",
+        "7. Anyagrendeles", "8. Szaradasi idok", "9. Szomszedok", "10. Tartalekkeret"
+      ];
+
+      lista.forEach((item, i) => doc.text(item, 20, 55 + (i * 12)));
+      doc.save("Kaheliszto_Csekklista.pdf");
+      
       setLoading(false);
-      setSuccess(true);
-      downloadPDF();
-    }, 1500);
+      setDone(true);
+    }, 1000);
   };
 
   return (
-    <div style={{ 
-      minHeight: '100vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center', 
-      backgroundColor: '#0f172a',
-      fontFamily: 'sans-serif',
-      color: 'white'
-    }}>
-      <div style={{ 
-        backgroundColor: '#1e293b', 
-        padding: '40px', 
-        borderRadius: '24px', 
-        textAlign: 'center',
-        boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
-        maxWidth: '400px',
-        width: '90%'
-      }}>
-        <h1 style={{ marginBottom: '10px' }}>KAHELISZTO KFT.</h1>
-        <p style={{ color: '#94a3b8', marginBottom: '30px' }}>Ingyenes Lakásfelújítási Segédlet</p>
+    <div style={{ backgroundColor: '#0f172a', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'sans-serif', color: 'white' }}>
+      <div style={{ backgroundColor: '#1e293b', padding: '40px', borderRadius: '30px', textAlign: 'center', maxWidth: '400px', width: '90%' }}>
+        <h1 style={{ margin: '0 0 10px 0' }}>KAHELISZTO KFT.</h1>
+        <p style={{ color: '#94a3b8', marginBottom: '30px' }}>Ingyenes Segédlet Felújítóknak</p>
         
-        {!success ? (
-          <form onSubmit={onSubmit}>
-            <input
-              type="email"
-              placeholder="Email címed"
-              required
-              style={{
-                width: '100%',
-                padding: '15px',
-                borderRadius: '12px',
-                border: 'none',
-                marginBottom: '20px',
-                boxSizing: 'border-box'
-              }}
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+        {!done ? (
+          <form onSubmit={handleDownload}>
+            <input 
+              type="email" required placeholder="Email címed" 
+              style={{ width: '100%', padding: '15px', borderRadius: '12px', border: 'none', marginBottom: '15px', boxSizing: 'border-box' }}
+              value={email} onChange={(e) => setEmail(e.target.value)}
             />
-            <button 
-              disabled={loading}
-              style={{
-                width: '100%',
-                padding: '15px',
-                borderRadius: '12px',
-                border: 'none',
-                backgroundColor: '#3b82f6',
-                color: 'white',
-                fontWeight: 'bold',
-                cursor: 'pointer'
-              }}
-            >
-              {loading ? 'KÜLDÉS...' : 'KÉREM A LISTÁT'}
+            <button style={{ width: '100%', padding: '15px', borderRadius: '12px', border: 'none', backgroundColor: '#2563eb', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>
+              {loading ? 'KÜLDÉS...' : 'LETÖLTÉS MOST'}
             </button>
           </form>
         ) : (
-          <div style={{ color: '#4ade80', fontWeight: 'bold' }}>
-            Sikeres! A letöltés elindult.
+          <div>
+            <CheckCircle size={50} color="#10b981" style={{ margin: 'auto' }} />
+            <h2 style={{ marginTop: '20px' }}>Köszönjük!</h2>
+            <p>A letöltés elindult.</p>
           </div>
         )}
       </div>
