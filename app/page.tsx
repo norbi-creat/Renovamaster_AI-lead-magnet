@@ -1,10 +1,11 @@
 const generatePDF = () => {
     const doc = new jsPDF('p', 'mm', 'a4');
-    const img = new Image();
     
-    // A crossOrigin segít, ha a böngésző blokkolná a kép betöltését
-    img.crossOrigin = "Anonymous";
-    img.src = '/kezikonyv.png?v=1'; // A ?v=1 kényszeríti a frissítést
+    // 1. Ráírunk egy teszt szöveget, hogy lássuk, működik-e a generálás
+    doc.text("RenovaMaster Teszt PDF", 10, 10);
+    
+    const img = new Image();
+    img.src = '/kezikonyv.png'; 
 
     img.onload = () => {
       try {
@@ -13,13 +14,17 @@ const generatePDF = () => {
         setSuccess(true);
         setLoading(false);
       } catch (err) {
-        console.error(err);
+        // Ha a kép nem jó, de a szöveget rá tudta tenni, akkor is mentse le!
+        doc.save("RenovaMaster_HIBAS_KEP.pdf");
         setLoading(false);
       }
     };
 
     img.onerror = () => {
-      alert("Hiba: Nem sikerült betölteni a képet a szerverről.");
+      // Ha nem találja a képet, akkor is mentsen el egy PDF-et a szöveggel!
+      doc.save("Csak_Szoveg_Kep_Nincs.pdf");
+      alert("A képet nem találom, de a PDF-et legeneráltam kép nélkül!");
+      setSuccess(true);
       setLoading(false);
     };
   };
