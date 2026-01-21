@@ -18,7 +18,7 @@ export default function Page() {
     img.onload = () => {
       try {
         // A képet rárakjuk a PDF-re (A4 méret: 210x297mm)
-        doc.addImage(img, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+        doc.addImage(img, 'png', 0, 0, 210, 297, undefined, 'FAST');
         doc.save("RenovaMaster_AI_Kezikonyv.pdf");
         
         // Csak ha a PDF mentése elindult, akkor mutatjuk a sikeres üzenetet
