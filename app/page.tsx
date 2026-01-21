@@ -14,14 +14,22 @@ export default function Page() {
   const generatePDF = () => {
     const doc = new jsPDF('p', 'mm', 'a4');
     
-    // A teljes PNG kép ráhelyezése az A4-es oldalra
-    // (A4 mérete: 210mm x 297mm)
     try {
-        doc.addImage(myImageData, 'PNG', 0, 0, 210, 297);
+        // Ellenőrizzük, hogy a kód valóban Base64-e és PNG-e
+        if (!myImageData.includes('base64')) {
+          throw new Error("Nem megfelelő Base64 formátum");
+        }
+
+        // Kinyerjük a tiszta adatot (eltávolítjuk a "data:image/png;base64," részt)
+        const base64Data = myImageData.split(',')[1];
+        
+        // Megpróbáljuk expliciten megadni a PNG formátumot
+        doc.addImage(base64Data, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+        
         doc.save("RenovaMaster_AI_Kezikonyv.pdf");
     } catch (e) {
-        console.error("Hiba a PDF generálásakor: ", e);
-        alert("Hiba történt a fájl létrehozásakor. Ellenőrizd a képformátumot!");
+        console.error("Részletes hiba:", e);
+        alert("Hiba történt. Lehet, hogy a kép túl nagy felbontású vagy sérült a kód.");
     }
   };
 
