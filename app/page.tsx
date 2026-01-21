@@ -12,44 +12,37 @@ export default function Page() {
     const doc = new jsPDF('p', 'mm', 'a4');
     const img = new Image();
     
-    // Itt a te képed neve legyen, ami a public mappában van!
+    // FIGYELEM: A képnek a public mappában kell lennie kezikonyv.png néven!
     img.src = '/kezikonyv.png'; 
 
-    // Megvárjuk, amíg a kép TELJESEN betöltődik
     img.onload = () => {
       try {
+        // A képet rárakjuk a PDF-re (A4 méret: 210x297mm)
         doc.addImage(img, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
         doc.save("RenovaMaster_AI_Kezikonyv.pdf");
-        // Csak a mentés UTÁN írjuk ki, hogy sikerült
+        
+        // Csak ha a PDF mentése elindult, akkor mutatjuk a sikeres üzenetet
         setSuccess(true);
         setLoading(false);
       } catch (err) {
-        console.error(err);
-        alert("Hiba a kép feldolgozása közben.");
+        console.error("PDF hiba:", err);
+        alert("Hiba történt a PDF generálása közben.");
         setLoading(false);
       }
     };
 
     img.onerror = () => {
-      alert("Nem találom a 'kezikonyv.png' fájlt a public mappában!");
+      console.error("Kép betöltési hiba. Ellenőrizd a public mappát!");
+      alert("Hiba: Nem sikerült betölteni a képet a szerverről.");
       setLoading(false);
     };
   };
 
-  const onSubmit = (e: any) => {
+  const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    generatePDF(); // Itt indítjuk el a folyamatot
-  };
-
-  const onSubmit = (e: any) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => {
-      generatePDF();
-      setLoading(false);
-      setSuccess(true);
-    }, 1000);
+    // Elindítjuk a PDF generálást
+    generatePDF();
   };
 
   return (
@@ -60,26 +53,36 @@ export default function Page() {
             <ShieldCheck size={64} style={{margin: 'auto'}} />
         </div>
         
-        <h1 style={{ marginBottom: '8px', fontSize: '32px' }}>RenovaMaster AI</h1>
+        <h1 style={{ marginBottom: '8px', fontSize: '32px', fontWeight: 'bold' }}>RenovaMaster AI</h1>
         <p style={{ color: '#94a3b8', marginBottom: '32px', fontSize: '18px' }}>
           A Nyugodt Felújítás Kézikönyve
         </p>
         
         {!success ? (
           <form onSubmit={onSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ textAlign: 'left', fontSize: '14px', color: '#cbd5e1', marginBottom: '-8px' }}>E-mail címed a letöltéshez:</div>
             <input
-              type="email" placeholder="E-mail címed" required
-              style={{ width: '100%', padding: '16px', borderRadius: '12px', border: '1px solid #334155', backgroundColor: '#0f172a', color: 'white' }}
-              value={email} onChange={(e) => setEmail(e.target.value)}
+              type="email" 
+              placeholder="pelda@email.hu" 
+              required
+              style={{ width: '100%', padding: '16px', borderRadius: '12px', border: '1px solid #334155', backgroundColor: '#0f172a', color: 'white', fontSize: '16px' }}
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)}
             />
-            <button disabled={loading} style={{ width: '100%', padding: '18px', borderRadius: '12px', border: 'none', backgroundColor: '#10b981', color: 'white', fontWeight: 'bold', cursor: 'pointer' }}>
-              {loading ? 'GENERÁLÁS...' : 'INGYENES LETÖLTÉS'}
+            <button 
+              disabled={loading} 
+              type="submit"
+              style={{ width: '100%', padding: '18px', borderRadius: '12px', border: 'none', backgroundColor: loading ? '#334155' : '#10b981', color: 'white', fontWeight: 'bold', cursor: loading ? 'not-allowed' : 'pointer', fontSize: '16px' }}
+            >
+              {loading ? 'GENERÁLÁS ÉS LETÖLTÉS...' : 'INGYENES LETÖLTÉS'}
             </button>
           </form>
         ) : (
-          <div style={{ padding: '20px', border: '2px solid #10b981', borderRadius: '15px' }}>
-            <CheckCircle size={40} color="#10b981" style={{ margin: 'auto', marginBottom: '10px' }} />
-            <p>Sikeres letöltés!</p>
+          <div style={{ padding: '30px', backgroundColor: 'rgba(16, 185, 129, 0.1)', border: '2px solid #10b981', borderRadius: '24px' }}>
+            <CheckCircle size={48} color="#10b981" style={{ margin: 'auto', marginBottom: '16px' }} />
+            <p style={{ fontWeight: 'bold', fontSize: '20px', marginBottom: '8px' }}>Sikeres letöltés!</p>
+            <p style={{ fontSize: '15px', color: '#94a3b8' }}>A PDF fájlt a böngésződ elmentette.</p>
+            <button onClick={() => setSuccess(false)} style={{ marginTop: '15px', background: 'none', border: 'none', color: '#3b82f6', cursor: 'pointer', textDecoration: 'underline' }}>Új letöltés</button>
           </div>
         )}
       </div>
