@@ -8,22 +8,38 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const generatePDF = async () => {
+  const generatePDF = () => {
     const doc = new jsPDF('p', 'mm', 'a4');
+    const img = new Image();
     
-    try {
-        // Meghívjuk a képet a public mappából
-        const img = new Image();
-        img.src = '/kezikonyv.png'; // Itt a fájlneved legyen!
+    // Itt a te képed neve legyen, ami a public mappában van!
+    img.src = '/kezikonyv.png'; 
 
-        img.onload = () => {
-          doc.addImage(img, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
-          doc.save("RenovaMaster_AI_Kezikonyv.pdf");
-        };
-    } catch (e) {
-        console.error("Hiba:", e);
-        alert("A kép még nem töltődött be. Próbáld meg pár másodperc múlva!");
-    }
+    // Megvárjuk, amíg a kép TELJESEN betöltődik
+    img.onload = () => {
+      try {
+        doc.addImage(img, 'PNG', 0, 0, 210, 297, undefined, 'FAST');
+        doc.save("RenovaMaster_AI_Kezikonyv.pdf");
+        // Csak a mentés UTÁN írjuk ki, hogy sikerült
+        setSuccess(true);
+        setLoading(false);
+      } catch (err) {
+        console.error(err);
+        alert("Hiba a kép feldolgozása közben.");
+        setLoading(false);
+      }
+    };
+
+    img.onerror = () => {
+      alert("Nem találom a 'kezikonyv.png' fájlt a public mappában!");
+      setLoading(false);
+    };
+  };
+
+  const onSubmit = (e: any) => {
+    e.preventDefault();
+    setLoading(true);
+    generatePDF(); // Itt indítjuk el a folyamatot
   };
 
   const onSubmit = (e: any) => {
